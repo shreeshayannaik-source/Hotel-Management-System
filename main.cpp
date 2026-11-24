@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <fstream>
 using namespace std;
 
 class Room {
@@ -30,8 +29,7 @@ public:
 };
 
 int main() {
-    int choice;
-    int roomNumber;
+    int choice, roomNumber;
     string name, phone;
 
     Room rooms[3] = {
@@ -44,11 +42,13 @@ int main() {
         cout << "\n===== HOTEL MANAGEMENT SYSTEM =====\n";
         cout << "1. View Rooms\n";
         cout << "2. Book Room\n";
-        cout << "3. Exit\n";
+        cout << "3. Checkout\n";
+        cout << "4. Exit\n";
         cout << "Enter choice: ";
         cin >> choice;
 
         switch (choice) {
+
         case 1:
             for (int i = 0; i < 3; i++) {
                 cout << "\nRoom: " << rooms[i].roomNumber;
@@ -60,40 +60,79 @@ int main() {
             }
             break;
 
-        case 2:
+        case 2: {
             cout << "Enter room number: ";
             cin >> roomNumber;
 
+            bool found = false;
+
             for (int i = 0; i < 3; i++) {
                 if (rooms[i].roomNumber == roomNumber) {
+                    found = true;
+
                     if (!rooms[i].isBooked) {
                         cout << "Enter customer name: ";
                         cin >> name;
 
-                        cout << "Enter phone number: ";
+                        cout << "Enter phone: ";
                         cin >> phone;
 
                         Customer customer(name, phone);
                         rooms[i].isBooked = true;
 
-                        cout << "\nRoom booked successfully!\n";
+                        cout << "Room booked successfully!\n";
                     } else {
-                        cout << "Sorry! Room is already booked.\n";
+                        cout << "Room already booked!\n";
                     }
                     break;
                 }
             }
-            break;
 
-        case 3:
-            cout << "Thank you!\n";
+            if (!found)
+                cout << "Room not found!\n";
+
+            break;
+        }
+
+        case 3: {
+            cout << "Enter room number for checkout: ";
+            cin >> roomNumber;
+
+            bool found = false;
+
+            for (int i = 0; i < 3; i++) {
+                if (rooms[i].roomNumber == roomNumber) {
+                    found = true;
+
+                    if (rooms[i].isBooked) {
+                        rooms[i].isBooked = false;
+                        cout << "Checkout successful!\n";
+                    } else {
+                        cout << "Room is not booked!\n";
+                    }
+                    break;
+                }
+            }
+
+            if (!found)
+                cout << "Room not found!\n";
+
+            break;
+        }
+
+        case 4:
+            cout << "Thank you for using our system!\n";
             break;
 
         default:
             cout << "Invalid choice!\n";
         }
 
-    } while (choice != 3);
+    } while (choice != 4);
 
     return 0;
 }
+
+
+                 
+           
