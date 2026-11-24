@@ -1,6 +1,6 @@
-#include<fstream>
 #include <iostream>
 #include <string>
+#include <fstream>
 using namespace std;
 
 class Room {
@@ -9,12 +9,16 @@ public:
     string roomType;
     double price;
     bool isBooked;
+    string customerName;
+    string phone;
 
     Room(int number, string type, double cost) {
         roomNumber = number;
         roomType = type;
         price = cost;
         isBooked = false;
+        customerName = "";
+        phone = "";
     }
 };
 
@@ -29,6 +33,21 @@ public:
     }
 };
 
+// Save all current bookings
+void saveBookings(Room rooms[], int size) {
+    ofstream file("bookings.txt");
+
+    for (int i = 0; i < size; i++) {
+        if (rooms[i].isBooked) {
+            file << rooms[i].roomNumber << " "
+                 << rooms[i].customerName << " "
+                 << rooms[i].phone << endl;
+        }
+    }
+
+    file.close();
+}
+
 int main() {
     int choice, roomNumber;
     string name, phone;
@@ -39,6 +58,23 @@ int main() {
         Room(103, "Deluxe", 3000)
     };
 
+    // Load previous bookings
+    ifstream inputFile("bookings.txt");
+
+    while (inputFile >> roomNumber >> name >> phone) {
+        for (int i = 0; i < 3; i++) {
+            if (rooms[i].roomNumber == roomNumber) {
+                rooms[i].isBooked = true;
+                rooms[i].customerName = name;
+                rooms[i].phone = phone;
+            }
+        }
+    }
+
+    inputFile.close();
+
+    cout << "Previous bookings loaded successfully!\n";
+
     do {
         cout << "\n===== HOTEL MANAGEMENT SYSTEM =====\n";
         cout << "1. View Rooms\n";
@@ -46,16 +82,16 @@ int main() {
         cout << "3. Checkout\n";
         cout << "4. Exit\n";
         cout << "5. Search Room\n";
-        cout << "6. Exit\n";
         cout << "Enter choice: ";
+
         cin >> choice;
 
         switch (choice) {
 
         case 1:
             for (int i = 0; i < 3; i++) {
-                cout << "\nRoom: " << rooms[i].roomNumber;
-                cout << "\nType: " << rooms[i].roomType;
+                cout << "\nRoom Number: " << rooms[i].roomNumber;
+                cout << "\nRoom Type: " << rooms[i].roomType;
                 cout << "\nPrice: " << rooms[i].price;
                 cout << "\nStatus: "
                      << (rooms[i].isBooked ? "Booked" : "Available")
@@ -77,17 +113,16 @@ int main() {
                         cout << "Enter customer name: ";
                         cin >> name;
 
-                        cout << "Enter phone: ";
+                        cout << "Enter phone number: ";
                         cin >> phone;
 
                         Customer customer(name, phone);
-                        rooms[i].isBooked = true;
-                        ofstream file("booking.txt", ios::app);
 
-                        file<< roomNumber <<" "
-                            << name <<" "
-                            << phone << end1;
-                        file.close();
+                        rooms[i].isBooked = true;
+                        rooms[i].customerName = customer.name;
+                        rooms[i].phone = customer.phone;
+
+                        saveBookings(rooms, 3);
 
                         cout << "Room booked successfully!\n";
                     } else {
@@ -115,6 +150,11 @@ int main() {
 
                     if (rooms[i].isBooked) {
                         rooms[i].isBooked = false;
+                        rooms[i].customerName = "";
+                        rooms[i].phone = "";
+
+                        saveBookings(rooms, 3);
+
                         cout << "Checkout successful!\n";
                     } else {
                         cout << "Room is not booked!\n";
@@ -133,34 +173,44 @@ int main() {
             cout << "Thank you for using our system!\n";
             break;
 
+        case 5: {
+            cout << "Enter room number to search: ";
+            cin >> roomNumber;
+
+            bool found = false;
+
+            for (int i = 0; i < 3; i++) {
+                if (rooms[i].roomNumber == roomNumber) {
+                    found = true;
+
+                    cout << "Room Number: "
+                         << rooms[i].roomNumber << endl;
+                    cout << "Room Type: "
+                         << rooms[i].roomType << endl;
+                    cout << "Price: "
+                         << rooms[i].price << endl;
+                    cout << "Status: "
+                         << (rooms[i].isBooked ? "Booked" : "Available")
+                         << endl;
+
+                    if (rooms[i].isBooked) {
+                        cout << "Customer: "
+                             << rooms[i].customerName << endl;
+                    }
+
+                    break;
+                }
+            }
+
+            if (!found)
+                cout << "Room not found!\n";
+
+            break;
+        }
+
         default:
             cout << "Invalid choice!\n";
         }
-        case 5: {
-    cout << "Enter room number to search: ";
-    cin >> roomNumber;
-
-    bool found = false;
-
-    for (int i = 0; i < 3; i++) {
-        if (rooms[i].roomNumber == roomNumber) {
-            found = true;
-
-            cout << "Room Number: " << rooms[i].roomNumber << endl;
-            cout << "Room Type: " << rooms[i].roomType << endl;
-            cout << "Price: " << rooms[i].price << endl;
-            cout << "Status: "
-                 << (rooms[i].isBooked ? "Booked" : "Available")
-                 << endl;
-            break;
-        }
-    }
-
-    if (!found)
-        cout << "Room not found!\n";
-
-    break;
-}
 
     } while (choice != 4);
 
