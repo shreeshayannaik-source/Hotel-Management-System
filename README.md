@@ -1,2 +1,2 @@
 # Hotel-Management-System
-Hotel Management System sing C++ and OOP
+Hotel Management System using C++ and OOP
