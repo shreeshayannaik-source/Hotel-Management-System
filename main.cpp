@@ -45,6 +45,8 @@ int main() {
         cout << "2. Book Room\n";
         cout << "3. Checkout\n";
         cout << "4. Exit\n";
+        cout << "5. Search Room\n";
+        cout << "6. Exit\n";
         cout << "Enter choice: ";
         cin >> choice;
 
@@ -134,6 +136,31 @@ int main() {
         default:
             cout << "Invalid choice!\n";
         }
+        case 5: {
+    cout << "Enter room number to search: ";
+    cin >> roomNumber;
+
+    bool found = false;
+
+    for (int i = 0; i < 3; i++) {
+        if (rooms[i].roomNumber == roomNumber) {
+            found = true;
+
+            cout << "Room Number: " << rooms[i].roomNumber << endl;
+            cout << "Room Type: " << rooms[i].roomType << endl;
+            cout << "Price: " << rooms[i].price << endl;
+            cout << "Status: "
+                 << (rooms[i].isBooked ? "Booked" : "Available")
+                 << endl;
+            break;
+        }
+    }
+
+    if (!found)
+        cout << "Room not found!\n";
+
+    break;
+}
 
     } while (choice != 4);
 
