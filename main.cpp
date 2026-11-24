@@ -1,3 +1,4 @@
+#include<fstream>
 #include <iostream>
 #include <string>
 using namespace std;
@@ -79,6 +80,12 @@ int main() {
 
                         Customer customer(name, phone);
                         rooms[i].isBooked = true;
+                        ofstream file("booking.txt", ios::app);
+
+                        file<< roomNumber <<" "
+                            << name <<" "
+                            << phone << end1;
+                        file.close();
 
                         cout << "Room booked successfully!\n";
                     } else {
